@@ -90,10 +90,11 @@
 
       #lunaiteinfo{
         display:inline;
-        padding-top: 12px;
+        /*padding-top: 12px;*/
         width: 350px;
         height: 300px;
-        margin-right:50px;
+        margin-right:60px;
+        margin-top:20px;
         font-size: 18px;
         line-height: 35px;
         float: right;
@@ -140,7 +141,7 @@
             <!-- container for information and the moon -->   
                 <div id="moonContainer">
                     <!-- see style.css for blur -->
-                    <svg id="moonv2" width="1200">
+                    <svg id="moonv2" width="100%">
                         <defs>
                           <!--   <pattern id="img1" patternUnits="userSpaceOnUse" width="300" height="400">
                                 <image xlink:href="./img/moonimgmap.jpg" x="0" y="0" width="800" height="400"/>
@@ -440,6 +441,62 @@
                     function randomLonLat(){
                         return [Math.random() * 360 - 180, Math.random() * 180 - 90];
                     }
+
+
+                    // d3 lunaites from the top of the browser
+                    // first set of lunaites
+                    var circlesFirst = moonsvg.selectAll("TEST")
+                        .data(d3dataset)
+                        .enter()
+                        .append("svg:circle")
+                            .attr("id", "TEST")
+                            // .attr("filter", "url(#glow)");
+
+                    circlesFirst.attr("cx", function(d){
+                        return Math.floor(Math.random() * (1050-800 +1)) + 800;
+                    })
+                        .attr("cy", -10)
+                        .attr("r", 1)
+                        .attr("fill", "white")
+                           
+                        //TODO: delays for each lunaite, animated bezier curves
+                        .transition()
+                            .delay(function(d, i){
+                                return Math.floor(Math.random() * 100000);
+                            })
+                            .duration(4000)
+                            .attr("r", 5)
+                            .attr("cx", 150)
+                            .attr("cy", 120)
+                            .remove();
+
+                    //second set of lunaites        
+                    var circlesSecond = moonsvg.selectAll("TEST2")
+                        .data(d3dataset)
+                        .enter()
+                        .append("svg:circle")
+                            .attr("id", "TEST2")
+                            // .attr("filter", "url(#glow)");
+
+                    circlesSecond.attr("cx", function(d){
+                        return Math.floor(Math.random() * (150-120 +1)) + 120;
+                    })
+                        .attr("cy", 120)
+                        .attr("r", 5)
+                        .attr("fill", "white")
+
+                        //TODO: delays for each lunaite, animated bezier curves
+                        .transition()
+                            .delay(function(d, i){
+                                return Math.floor(Math.random() * 200000);
+                            })
+                            .duration(5000)
+                            .attr("r", 1)
+                            .attr("cx", function(d){
+                                return Math.floor(Math.random() * (750-500 +1)) + 500;
+                            })
+                            .attr("cy", 500)
+                            .remove();
 
                     
                 }//end
