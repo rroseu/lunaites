@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Lunaites</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- Le styles -->
+        <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="./css/style.css" rel="stylesheet">
+        <link href="./bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <!-- <link href='https://fonts.googleapis.com/css?family=Anaheim' rel='stylesheet' type='text/css'> -->
+
+        <style>
+            @font-face
+              {
+                font-family: 'Anaheim';
+                 /*remove later*/
+                src: url('/LunarMeteorites/font/Anaheim/Anaheim-Regular.ttf');
+              }
+        </style>
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="../assets/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <!-- javascript stuff -->
+        <script src="./bootstrap/js/jquery-1.9.1.min.js"></script>
+        <script src="./bootstrap/js/bootstrap-tooltip.js"></script>
+        <script src="./bootstrap/js/bootstrap-popover.js"></script>
+        <script src="./js/two.min.js"></script>
+        <script src="./js/d3.v3.js"></script>
+        <script src="./js/three.js"></script>
+
+    </head>
+    
+    <body>
+        <!-- container for information and the moon -->
+           
+            <div id="moonContainer">
+                <!-- see style.css for blur -->
+                <svg id="moonv2" width="880" height="315">
+                    <defs>
+                        <pattern id="img1" patternUnits="userSpaceOnUse" width="300" height="400">
+                            <image xlink:href="./img/moonimgmap.jpg" x="0" y="0" width="800" height="400"/>
+                        </pattern>
+                    </defs>
+                    <circle id="moonSVG" fill="#FFFFFF" cx="180" cy="120" r="80"/>
+                </svg>
+            
+                <div id="lunaiteinfo">
+                    <h2>Lunaites</h2>
+                    <p>A <a href="http://en.wikipedia.org/wiki/Meteorite">meteorite</a> is a meteoroid (a solid piece of debris from such sources as asteroids or comets) originating in outer space that survives impact with the Earth's surface. A <a href="http://en.wikipedia.org/wiki/Lunar_meteorite">lunaite</a>, or a lunar meteorite, is a meteorite that is known to have originated on the moon.</p><br/><br/>
+
+
+                    <!-- We'll need to have one for each lunaite marker -->
+                    <!-- <a href="#" id="historypopup" class="btn btn-primary btn-small" data-original-title="Aarhus" data-content="found: 1951 <br/>mass: 179g">Lunaite</a> -->
+                    <script>
+
+                        // $("#historypopup").popover({html:true});
+
+                    </script>
+
+                </div>
+
+            </div>
+        
+        <!-- earth rendering three.js -->
+
+        <div id="globe"></div>
+        <script>
+            var POS_X = 500;
+            var POS_Y = 500;
+            var POS_Z = 2000;
+            var WIDTH = 1200;
+            var HEIGHT = 1000;
+
+            var FOV = 45;
+            var NEAR = 1; 
+            var FAR = 4000;
+
+            //global variables and initialization code
+            //simple basic renderer
+             var renderer = new THREE.WebGLRenderer();
+               renderer.setSize(WIDTH, HEIGHT);
+            //renderer.setClearColorHex(0x111111);
+
+            //add it to the target element
+            var mapDiv = document.getElementById("globe");
+            mapDiv.appendChild(renderer.domElement);
+
+            //set up a camera to point to the center
+            var camera = new THREE.PerspectiveCamera(FOV, WIDTH/HEIGHT, NEAR, FAR);
+            camera.position.set(POS_X, POS_Y, POS_Z);
+            camera.lookAt(new THREE.Vector3(400,40,40));
+
+            //create a basic scene and add the camera
+            var scene = new THREE.Scene();
+            scene.add(camera);
+
+            //wait until the document is loaded before loading the data
+            $(document).ready(function() {
+                jQuery.get('./data/meteorites-updated_05-14-13.csv', function(data) {
+                    addDensity(CSVToArray(data));
+                    addLights();
+                    //addStars();
+                    addEarth();
+                    addClouds();
+                    render();
+                });
+            });
+
+            // simple function that converts the density data to the markers on screen
+            // the height of each marker is relative to the density.
+            function addDensity(data) {
+
+                var totalCount = 0;
+                var totalEmpty = 0;
+                var totalNotEmpty = 0;
+
+                var d3dataset = [];
+                // the geometry that will contain all our cubes
+                var geom = new THREE.Geometry();
+
+                // material to use for each of our elements. Could use a set of materials to
+                // add colors relative to the density. Not done here.
+                var cubeMat = new THREE.MeshLambertMaterial({color: 0xffffff});//opacity:0.6, emissive:0xffffff});
+                
+                for (var i = 0 ; i < data.length-1 ; i++) {
+
+                    if((data[i][2]).indexOf("Lunar") !== -1){
+                        totalCount++;
+
+                    //get the data, and set the offset, we need to do this since the x,y coordinates
+                    //from the data aren't in the correct format
+                        if((data[i][7]) && (parseFloat(data[i][7]) != 0.000000)) {
+                            totalNotEmpty++;
+                            d3dataset.push(data[i][3]);
+                            var x = parseFloat(data[i][7]) - 35;
+                            var y = parseFloat(data[i][8]) + 35;
+                           // var value = 1;//parseFloat(data[i][2]);
+                            console.log("data[i] latitude: " + data[i][7] + ", data[i] longitude: "+ data[i][8]);
+                            //console.log("x: " + x + " y: " + y + " value: " + value);
+                            // calculate the position where we need to start the cube
+                            var position = latLongToVector3(y, x, 610, 2);
+
+                            // create the cube
+                            var cube = new THREE.Mesh(new THREE.CubeGeometry(4,4,80,1,1,1,cubeMat));
+                            var body = new THREE.Mesh(new THREE.SphereGeometry(16, 40, 40), new THREE.MeshLambertMaterial({color: 0xffffff}));
+                            body.overdraw = "true";
+                            camera.position.z = 700;
+
+                            // position the cube correctly
+                            cube.position = position;
+                            cube.lookAt( new THREE.Vector3(0,0,0) );
+
+                            body.position = latLongToVector3(y, x, 650, 2);
+                            body.lookAt(new THREE.Vector3(0, 0, 0));
+
+                            // merge with main model
+                            THREE.GeometryUtils.merge(geom,cube, body);
+                            scene.add(cube);
+                            scene.add(body);
+
+
+                        }
+                        else{
+                            totalEmpty++;
+                            console.log("THIS IS EMPTY: " + data[i][0])
+                        }
+                    }
+
+                }
+                console.log("TotalCount: " + totalCount + ", totalEmpty: " + totalEmpty + ", totalNotEmpty: " + totalNotEmpty);
+            
+
+                // create a new mesh, containing all the other meshes.
+                var total = new THREE.Mesh(geom,new THREE.MeshFaceMaterial());
+
+                // and add the total mesh to the scene
+                scene.add(total);
+
+
+
+
+                //d3 circles, might want to put this in another function later?
+
+                d3dataset = [5, 10, 15, 20, 25];
+                 // array for d3 dataset
+                console.log("D3DATASET: " + d3dataset);
+
+                var moonsvg = d3.select("#moonv2");
+
+                var circlesFirst = moonsvg.selectAll("TEST")
+                    .data(d3dataset)
+                    .enter()
+                    .append("svg:circle")
+                        .attr("id", "TEST");
+
+                circlesFirst.attr("cx", function(d){
+                    // var arrayOfX = [ 850, 860, 870, 875, 890, 900];
+                    return Math.floor(Math.random() * (950-800 +1)) + 800;
+                })
+                    .attr("cy", -10)
+                    .attr("r", 2)
+                    .attr("fill", "white")
+                    .attr("stroke", "aliceblue")
+                    .attr("stroke-width", 3)
+                    // .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");});
+
+                    //TODO: delays for each lunaite, animated bezier curves
+                    .transition()
+                        .delay(500)
+                        .duration(5000)
+                        .attr("r", 8)
+                        .attr("cx", 120)
+                        .attr("cy", 120);
+
+                // Code below for second set of lunaites        
+                    
+                // var circlesSecond = moonsvg.selectAll("TEST2")
+                //     .data(d3dataset)
+                //     .enter()
+                //     .append("svg:circle")
+                //         .attr("id", "TEST2");
+
+                // circlesSecond.attr("cx", 120)
+                //     .attr("cy", 120)
+                //     .attr("r", 8)
+                //     .attr("fill", "white")
+                //     .attr("stroke", "aliceblue")
+                //     .attr("stroke-width", 3)
+                //     // .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");});
+
+                //     //TODO: delays for each lunaite, animated bezier curves
+                //     .transition()
+                //         .delay(2200)
+                //         .duration(9000)
+                //         .attr("r", 8)
+                //         .attr("cx", 500)
+                //         .attr("cy", 500);
+            }
+
+            //add a light
+            function addLights(){
+                light = new THREE.DirectionalLight(0xffffff);
+                scene.add(light);
+                light.position.set(POS_X, POS_Y, POS_Z);
+            }
+
+
+            //add stars
+            // function addStars(){
+            //     var i = 0; 
+            //     var r = 6371; 
+            //     var starsGeometry = [new THREE.Geometry(), new THREE.Geometry()];
+            //     for(i = 0; i < 250; i++){
+            //         var vertex = new THREE.Vector3();
+            //         vertex.x = Math.random() * 2 - 1;
+            //         vertex.y = Math.random() * 2 - 1;
+            //         vertex.z = Math.random() * 2 - 1; 
+            //         vertex.multiplyScalar(r);
+
+            //         starsGeometry[0].vertices.push(vertex);
+            //     }
+
+            //     for(i = 0; i < 1500; i++){
+            //         var vertex = new THREE.Vector3();
+            //         vertex.x = Math.random() * 2 - 1;
+            //         vertex.y = Math.random() * 2 - 1;
+            //         vertex.z = Math.random() * 2 - 1; 
+            //         vertex.multiplyScalar(r);
+
+            //         starsGeometry[1].vertices.push(vertex);
+            //     }
+
+            //     console.log(starsGeometry);
+            //     var stars; 
+            //     var starsMaterials = [
+            //         new THREE.ParticleBasicMaterial({color: 0x555555, size: 2, sizeAttenuation: false}),
+            //         new THREE.ParticleBasicMaterial({color: 0x555555, size: 1, sizeAttenuation: false}),
+            //         new THREE.ParticleBasicMaterial({color: 0x333333, size: 2, sizeAttenuation: false}),
+            //         new THREE.ParticleBasicMaterial({color: 0x3a3a3a, size: 1, sizeAttenuation: false}),
+            //         new THREE.ParticleBasicMaterial({color: 0x1a1a1a, size: 2, sizeAttenuation: false}),
+            //         new THREE.ParticleBasicMaterial({color: 0x1a1a1a, size: 1, sizeAttenuation: false})
+            //     ];
+
+            //     for(i = 10; i < 30; i++){
+            //         stars = new THREE.ParticleSystem(starsGeometry[i % 2], starsMaterials[i % 6]);
+            //         stars.rotation.x = Math.random() * 6;
+            //         stars.rotation.y = Math.random() * 6;
+            //         stars.rotation.z = Math.random() * 6;
+
+            //         s = i * 10;
+            //         stars.scale.set(s, s, s);
+            //         stars.matrixAutoUpdate = false;
+            //         stars.updateMatrix();
+            //         scene.add(stars);
+            //     }
+            // }
+
+            //add the earth
+            function addEarth(){
+                var spGeo = new THREE.SphereGeometry(600, 50, 50);
+                var planetTexture = THREE.ImageUtils.loadTexture("./img/world_bathy.jpg");
+                var mat2 = new THREE.MeshPhongMaterial({
+                    map: planetTexture,
+                   // overdraw: true,
+                    shininess: 70,
+                    emissive: "white"
+                });
+                sp = new THREE.Mesh(spGeo, mat2);
+                scene.add(sp);
+            }
+        
+            // add clouds
+            function addClouds() {
+                var spGeo = new THREE.SphereGeometry(600,50,50);
+                var cloudsTexture = THREE.ImageUtils.loadTexture( "./img/earth_clouds_1024.png" );
+                var materialClouds = new THREE.MeshPhongMaterial( { color: 0xffffff, map: cloudsTexture, transparent:true, opacity:0.3 } );
+
+                meshClouds = new THREE.Mesh( spGeo, materialClouds );
+                meshClouds.scale.set( 1.015, 1.015, 1.015 );
+                scene.add( meshClouds );
+            }
+
+
+            // convert the positions from a lat, lon to a position on a sphere.
+            function latLongToVector3(lat, lon, radius, heigth) {
+                var phi = (lat)*Math.PI/180;
+                var theta = (lon-180)*Math.PI/180;
+
+                var x = -(radius+heigth) * Math.cos(phi) * Math.cos(theta);
+                var y = (radius+heigth) * Math.sin(phi);
+                var z = (radius+heigth) * Math.cos(phi) * Math.sin(theta);
+
+                return new THREE.Vector3(x,y,z);
+            }
+
+            //render
+            function render() {
+                var timer = Date.now() * 0.00005;
+                camera.position.x = (Math.cos( timer ) *  1800);
+                //console.log("CAMERA POSITION X: " + camera.position.x);
+                camera.position.z = (Math.sin( timer ) *  1800) ;
+                camera.lookAt( scene.position );
+                light.position = camera.position;
+                light.lookAt(scene.position);
+                renderer.render( scene, camera );
+                requestAnimationFrame( render );
+            }
+
+           
+            // from http://stackoverflow.com/questions/1293147/javascript-code-to-parse-csv-data
+            function CSVToArray( strData, strDelimiter ){
+                // Check to see if the delimiter is defined. If not,
+                // then default to comma.
+                strDelimiter = (strDelimiter || ",");
+
+                // Create a regular expression to parse the CSV values.
+                var objPattern = new RegExp(
+                    (
+                        // Delimiters.
+                            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+
+                                // Quoted fields.
+                                    "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+
+                                // Standard fields.
+                                    "([^\"\\" + strDelimiter + "\\r\\n]*))"
+                    ),
+                    "gi"
+                );
+
+                // Create an array to hold our data. Give the array
+                // a default empty first row.
+                var arrData = [[]];
+
+                // Create an array to hold our individual pattern
+                // matching groups.
+                var arrMatches = null;
+
+                // Keep looping over the regular expression matches
+                // until we can no longer find a match.
+                while (arrMatches = objPattern.exec( strData )){
+
+                    // Get the delimiter that was found.
+                    var strMatchedDelimiter = arrMatches[ 1 ];
+
+                    // Check to see if the given delimiter has a length
+                    // (is not the start of string) and if it matches
+                    // field delimiter. If id does not, then we know
+                    // that this delimiter is a row delimiter.
+                    if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)){
+
+                        // Since we have reached a new row of data,
+                        // add an empty row to our data array.
+                        arrData.push( [] );
+
+                    }
+
+                    // Now that we have our delimiter out of the way,
+                    // let's check to see which kind of value we
+                    // captured (quoted or unquoted).
+                    if (arrMatches[ 2 ]){
+
+                        // We found a quoted value. When we capture
+                        // this value, unescape any double quotes.
+                        var strMatchedValue = arrMatches[ 2 ].replace(
+                                new RegExp( "\"\"", "g" ),
+                                "\""
+                        );
+
+                    } else {
+
+                        // We found a non-quoted value.
+                        var strMatchedValue = arrMatches[ 3 ];
+
+                    }
+
+                    // Now that we have our value string, let's add
+                    // it to the data array.
+                    arrData[ arrData.length - 1 ].push( strMatchedValue );
+                }
+
+                // Return the parsed data.
+                return( arrData );
+            }
+        </script>
+        
+
+        <!-- bootstrap nav bar goodness -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+              <!-- <a class="brand" href="index.html">Lunaites</a> -->
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li><a href="index.html">Lunaites</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,76 +1,3 @@
-<<<<<<< HEAD
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Lunaites by rroseu</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Lunaites</h1>
-        <p>visualizing lunar meteorite landings</p>
-
-        <p class="view"><a href="https://github.com/rroseu/lunaites">View the Project on GitHub <small>rroseu/lunaites</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/rroseu/lunaites/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/rroseu/lunaites/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/rroseu/lunaites">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/rroseu">rroseu</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
-</html>
-=======
 
     <!DOCTYPE html>
     <html lang="en">
@@ -105,10 +32,8 @@ $ git checkout gh-pages
             <script src="./bootstrap/js/jquery-1.9.1.min.js"></script>
             <script src="./bootstrap/js/bootstrap-tooltip.js"></script>
             <script src="./bootstrap/js/bootstrap-popover.js"></script>
-
             <script src="./js/two.min.js"></script>
             <script src="./js/d3.custom.js"></script>
-              <script src="./js/popover.js"></script>
             
             <!-- <script src="./js/three.js"></script> -->
             <!-- <script src="./js/gistscript.js"></script> -->
@@ -127,13 +52,13 @@ $ git checkout gh-pages
 
                              <!-- for the d3js earth -->
                             <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#020659;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#020873;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#1B3D93;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#295DE0;stop-opacity:1" />
                             </linearGradient>
                             <filter id="glow">
                                 <feColorMatrix type="matrix"
                                     values=
-                                    "0 0 0 0.9   0
+                                    "0 0 0 0   0
                                      0 0 0 0.9 0 
                                      0 0 0 0.9 0 
                                      0 0 0 1   0"/>
@@ -224,11 +149,8 @@ $ git checkout gh-pages
                             .call(zoom)
                             .on("dblclick.zoom", null);
 
-
-                            
-
                     // Create a list of random stars and add them to outerspace
-                    // var starList = createStars(300);
+                    var starList = createStars(300);
                             
                     // var stars = moonsvg.append("g")
                     //     .selectAll("g")
@@ -251,10 +173,8 @@ $ git checkout gh-pages
                         .attr("filter", "url(#glow)")
                         .attr("fill", "url(#gradBlue)");
 
-
                     //Add all of the countries to the globe
                     var g = moonsvg.append("g"),
-                        locations,
                         features;
 
                     //loading json for countries
@@ -267,8 +187,8 @@ $ git checkout gh-pages
                     });
 
                     //Add all of the lunaites to the globe
-                    // var locations = moonsvg.append("g")
-                    //         .attr('id', 'locations');
+                    var locations = moonsvg.append("g")
+                            .attr('id', 'locations');
 
                     //loading csv meteorite data to convert to json
                     d3.csv('./data/meteorites-updated_05-14-13.csv', function(d){
@@ -276,51 +196,12 @@ $ git checkout gh-pages
                         myData = JSON.stringify(d);
                         var json = JSON.parse(myData);
                         var geojson = geoJSON(json);
+                        
                         locations = g.selectAll(".location").data(geojson.features);
 
                         locations.enter().append("path")
                             .attr("class", "location")
-                            .attr("d", function(d){ return path(circle.clip(d)); })
-                            .tooltip(function(d, i) {
-                                var r, svg;
-                                r = +d3.select(this).attr('r');
-                                svg = d3.select(document.createElement("svg")).attr("height", 50);
-                                g = svg.append("g");
-                                g.append("rect").attr("width", r * 10).attr("height", 10);
-                                g.append("text").text("mass: " + d.properties.mass).attr("dy", "10");
-                                return {
-                                  type: "popover",
-                                  title: d.properties.name,
-                                  content: svg,
-                                  detection: "shape",
-                                  placement: "fixed",
-                                  gravity: "right",
-                                  position: [d.features, d.features],
-                                  displacement: [r + 2, -50],
-                                  mousemove: false
-                                };
-                            });
-                    });
-                            
-                            // .on("click", function(d){
-                            //     // alert(d.properties.name);
-                            //     // $("#historypopup").popover({html:true});
-                            // });
-                            
-
-                        // console.log(geojson.features);
-                        // g.selectAll(".location").on("click", function()
-                        //  { 
-                        //     //alert(d3.select(this).name);
-                        //     var name = geojson.features.properties;
-                        //     // console.log(d);
-                        //     alert(name); 
-                        //  })
-
-                        // locations.enter().append("path")
-                        //     .attr("class", "location")
-                        //     .attr("d", function(d){ return path(circle.clip(d)); });
-                        //console.log(geojson.features[0].properties.name);
+                            .attr("d", function(d){ return path(circle.clip(d)); });
 
 
                         // var pointsToPlot = locations.selectAll('locations')
@@ -330,7 +211,7 @@ $ git checkout gh-pages
                         //         .attr('class', 'features')
                                 // .attr('d', function(d){ return path(circle.clip(d)); });
 
-                        
+                        });
 
 
                     function geoJSON(data){
@@ -351,14 +232,12 @@ $ git checkout gh-pages
                                             'coordinates' : [data[i].reclat, data[i].reclong] //[x,y]
                                         },
                                         'properties': {
-                                            'name' : data[i]['name'],
-                                            'mass' : data[i]['mass']
+                                            'name' : data[i]['name']
                                         }
                                     });
                                 }
                             }
                         }; //end FOR i
-                        console.log(_geoJSON);
                         return _geoJSON;
 
                     }; //end function geoJSON(data)
@@ -420,7 +299,60 @@ $ git checkout gh-pages
                         return [Math.random() * 360 - 180, Math.random() * 180 - 90];
                     }
 
-                    
+                    // d3 lunaites from the top of the browser
+                    // first set of lunaites
+                    var circlesFirst = moonsvg.selectAll("TEST")
+                        .data(d3dataset)
+                        .enter()
+                        .append("svg:circle")
+                            .attr("id", "TEST")
+                            // .attr("filter", "url(#glow)");
+
+                    circlesFirst.attr("cx", function(d){
+                        return Math.floor(Math.random() * (1050-800 +1)) + 800;
+                    })
+                        .attr("cy", -10)
+                        .attr("r", 1)
+                        .attr("fill", "white")
+                           
+                        //TODO: delays for each lunaite, animated bezier curves
+                        .transition()
+                            .delay(function(d, i){
+                                return Math.floor(Math.random() * 100000);
+                            })
+                            .duration(4000)
+                            .attr("r", 5)
+                            .attr("cx", 150)
+                            .attr("cy", 120)
+                            .remove();
+
+                    //second set of lunaites        
+                    var circlesSecond = moonsvg.selectAll("TEST2")
+                        .data(d3dataset)
+                        .enter()
+                        .append("svg:circle")
+                            .attr("id", "TEST2")
+                            // .attr("filter", "url(#glow)");
+
+                    circlesSecond.attr("cx", function(d){
+                        return Math.floor(Math.random() * (150-120 +1)) + 120;
+                    })
+                        .attr("cy", 120)
+                        .attr("r", 5)
+                        .attr("fill", "white")
+
+                        //TODO: delays for each lunaite, animated bezier curves
+                        .transition()
+                            .delay(function(d, i){
+                                return Math.floor(Math.random() * 200000);
+                            })
+                            .duration(5000)
+                            .attr("r", 1)
+                            .attr("cx", function(d){
+                                return Math.floor(Math.random() * (750-500 +1)) + 500;
+                            })
+                            .attr("cy", 500)
+                            .remove();
                 }//end
             </script>
             
@@ -446,4 +378,3 @@ $ git checkout gh-pages
             </div>
         </body>
     </html>
->>>>>>> master

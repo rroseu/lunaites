@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Lunaites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="./bootstrap/css/style.css" rel="stylesheet">
+    <link href="./bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- <link href='https://fonts.googleapis.com/css?family=Anaheim' rel='stylesheet' type='text/css'> -->
+
+    <style>
+      @font-face
+      {
+        font-family: 'Anaheim';
+         /*remove later*/
+        src: url('./font/Anaheim/Anaheim-Regular.ttf');
+      }
+
+      body {
+        overflow: hidden;
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-left: 55px;
+        padding-right: 55px;
+        /*padding-bottom: 60px;*/
+
+        font-family: 'Anaheim', sans-serif;
+        
+        /*background-image: url('https://farm1.staticflickr.com/15/20623103_a10bc770b1_o.jpg');*/
+        /*remove later*/
+        background-image: url('./img/starrybg.jpg');
+        background-size: 100%;
+
+        }
+
+      #lunaiteinfo{
+        padding-top: 10px;
+        width: 32%;
+        font-size: 18px;
+        line-height: 35px;
+        float: right;
+        text-align: left;
+        color:gray;
+      }
+
+      #moonContainer{
+        float:left;
+        display: inline;
+      }
+
+      #moonInfoContainer{
+        padding-top:20px;
+        width:1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #globe{
+        margin: 0 auto;
+        width:1000px;
+        height: 250px;
+        bottom:0;
+        position:absolute;
+      }
+
+      h2{
+        color: white;
+      }
+
+      </style>
+  
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <script src="./bootstrap/js/jquery-1.9.1.min.js"></script>
+  <script src="./bootstrap/js/bootstrap-tooltip.js"></script>
+  <script src="./bootstrap/js/bootstrap-popover.js"></script>
+  <script src="./js/two.min.js"></script>
+  <script src="./js/d3.v3.js"></script>
+  <script src="./js/three.min.js"></script>
+
+  <body>
+
+    <!-- container for information and the moon -->
+    <div id="moonInfoContainer">
+      <!--   <svg width="300" height="400">
+            <defs>
+                <pattern id="img1" patternUnits="userSpaceOnUse" width="300" height="400">
+                    <image xlink:href="./img/MoonMap_2500x1250.jpg" x="0" y="0" width="800" height="400"/>
+                </pattern>
+            </defs>
+            <circle fill="url(#img1)" cx="180" cy="120" r="90"/>
+        </svg> -->
+
+        <canvas id="moonv2" width="800" height="400"></canvas>
+        <script>
+
+
+            var canvas = document.getElementById('moonv2');
+            var ctx = canvas.getContext('2d');
+            
+            ctx.beginPath();
+            ctx.arc(150, 150, 90, 0, 2 * Math.PI, false);
+            ctx.lineCap = 'round';
+            ctx.webkitImageSmoothingEnabled=true;
+            ctx.shadowBlur = 100;
+            ctx.shadowColor = "white";
+            ctx.fillStyle = "rgb(250, 250, 250)";
+            ctx.fill();
+              
+
+
+        </script>
+
+        <div id="lunaiteinfo">
+            <h2>Lunaites</h2>
+            <p>A <a href="http://en.wikipedia.org/wiki/Meteorite">meteorite</a> is a meteoroid (a solid piece of debris from such sources as asteroids or comets) originating in outer space that survives impact with the Earth's surface. A <a href="http://en.wikipedia.org/wiki/Lunar_meteorite">lunaite</a>, or a lunar meteorite, is a meteorite that is known to have originated on the moon.</p><br/><br/>
+
+
+            <!-- We'll need to have one for each lunaite marker -->
+            <!-- <a href="#" id="historypopup" class="btn btn-primary btn-small" data-original-title="Aarhus" data-content="found: 1951 <br/>mass: 179g">Lunaite</a> -->
+            <script>
+
+                // $("#historypopup").popover({html:true});
+
+            </script>
+
+        </div>
+    </div>
+    <!-- earth rendering three.js -->
+
+    <div id="globe"></div>
+    <script>
+        var POS_X = 1800;
+        var POS_Y = 500;
+        var POS_Z = 2000;
+        var WIDTH = 1400;
+        var HEIGHT = 1000;
+
+        var FOV = 45;
+        var NEAR = 1; 
+        var FAR = 4000;
+
+        //global variables and initialization code
+        //simple basic renderer
+         var renderer = new THREE.WebGLRenderer();
+           renderer.setSize(WIDTH, HEIGHT);
+        //renderer.setClearColorHex(0x111111);
+
+        //add it to the target element
+        var mapDiv = document.getElementById("globe");
+        mapDiv.appendChild(renderer.domElement);
+
+        //set up a camera to point to the center
+        var camera = new THREE.PerspectiveCamera(FOV, WIDTH/HEIGHT, NEAR, FAR);
+        camera.position.set(POS_X, POS_Y, POS_Z);
+        camera.lookAt(new THREE.Vector3(0,0,0));
+
+        //create a basic scene and add the camera
+        var scene = new THREE.Scene();
+        scene.add(camera);
+
+        //wait until the document is loaded before loading the data
+        $(document).ready(function() {
+            addLights();
+            addEarth();
+            //addMoon();
+            render();
+        });
+
+        //add the earth
+        function addEarth(){
+            var spGeo = new THREE.SphereGeometry(700, 40, 40);
+            var planetTexture = THREE.ImageUtils.loadTexture("./img/world_bathy.jpg");
+            var mat2 = new THREE.MeshPhongMaterial({
+                map: planetTexture,
+                shininess: 1
+            });
+            sp = new THREE.Mesh(spGeo, mat2);
+            scene.add(sp);
+        }
+
+        //add a light
+        function addLights(){
+            light = new THREE.DirectionalLight(0xffffff);
+            scene.add(light);
+            light.position.set(POS_X, POS_Y, POS_Z);
+        }
+
+        //render
+        function render(){
+            var timer = Date.now() * 0.00005;
+            camera.position.x = (Math.cos( timer ) *  1800);
+            camera.position.z = (Math.sin( timer ) *  1800) ;
+            camera.lookAt( scene.position );
+            light.position = camera.position;
+            light.lookAt(scene.position);
+            renderer.render( scene, camera );
+            requestAnimationFrame( render );
+        }
+
+        // convert the positions from a lat/lon to a position on a sphere
+        function latLongToVector3 (lat, lon, radius, height){
+            var phi = (lat)*Math.PI/180;
+            var theta = (lon-180)*Math.PI/180;
+
+            var x = -(radius + height) * Math.cos(phi) * Math.cos(theta);
+            var y = (radius + height) * Math.sin(phi);
+            var z = (radius + height) * Math.cos(phi) *Math.sin(theta);
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        //add data to the markers on screen
+        //height is relative to the density (this will not be relevant for our data, so we need to change this. Markers should maybe be relative to the mass of each lunaite)
+
+
+        function addData(data){
+            //geometry that will contain our cubes
+            var geom = new THREE.Geometry();
+            //material to use for each of our elements
+            var cubeMat = new THREE.MeshLambertMaterial({
+                color: 0x000000,
+                opacity: 0.6,
+                emissive:0xffffff
+            });
+
+            for(var i = 0; i < data.length-1; i++){
+                //get the data, set the offset, we need to do this since the x,y coordinates in the data aren't in the correct format.
+                var x = parseInt(data[i][0]) + 180;
+                var y = parseInt(data[i][1]-84)* -1;
+                var value = parseFloat(data[i][2]);
+
+                //calculate position where we need to start the cube
+                var position = latLongToVector3(y, x, 600, 2);
+
+                //create the cube
+                var cube = new THREE.Mesh(new THREE.CubeGeometry(5, 5, 1+value/8, 1, 1, 1, cubeMat));
+
+                //position the cube correctly
+                cube.position = position;
+                cube.lookAt(new THREE.Vector3(0,0,0));
+
+                //merge with the main model
+                THREE.GeometryUtils.merge(geom, cube);
+            }
+
+            //create a new mesh, containing all the other meshes
+            var total = new THREE.Mesh(geom, new THREE.MeshFaceMaterial());
+
+            //add the total mesh to the scene
+            scene.add(total);
+        }
+
+    </script>
+
+
+    <!-- loading data in console -->
+
+    <script>
+        var myRows = new Array();
+        d3.csv("./data/meteorites-updated_05-14-13.csv")
+        .row(function(d) { 
+          return {
+                name: d.name, 
+                nametype: d.nametype,
+                recclass: d.recclass,
+                mass: d.mass,
+                fall: d.fall,
+                year: d.year,
+                reclat: d.reclat,
+                recloc: d.reclong
+              }; })
+        .get(function(error, rows) { console.log(rows[1]); console.log("Total Rows: " +rows.length);
+
+        for (var i = 0; i<rows.length; i++){
+
+          if(rows[i].recclass.indexOf("Lunar") !== -1){
+            myRows.push(rows[i]);
+            console.log(rows[i]);
+          }
+        }
+
+        console.log("MY ROWS LENGTH: "+ myRows.length);
+        });
+    </script>
+
+
+  
+
+    <!-- nav bar goodness -->
+  <!--   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="index.html">Lunaites</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="about.html">About</a></li>
+              <li><a href="data.html">Data</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  </body>
+
+</html>
