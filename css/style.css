@@ -1,99 +1,109 @@
-  <style>
-     /* @font-face
-      {
-        font-family: 'Anaheim';
-         /*remove later*/
-        /*src: url('/LunarMeteorites/font/Anaheim/Anaheim-Regular.ttf');*/
-      /**/
+body {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  font-family: 'Anaheim', sans-serif;
+  background-image: url('../img/starrybg.jpg');
+  background-size: 100%;
+}
 
-      body {
-        width: 1200px;
-        margin: 0 auto;
-        overflow: hidden;
-        padding-top: 40px; /* 60px to make the container go all the way to the bottom of the topbar */
-        font-family: 'Anaheim', sans-serif;
+svg{
+  position: absolute;
+  display:inline-block;
+}
 
-       /* background-color: #444444;
-        background-image: -webkit-gradient(linear, left top, right bottom, from(#000), to(#333)); 
-        background-image: -webkit-linear-gradient(left top, #000, #333);
-        background-image: -moz-linear-gradient(left top, #000, #333);*/
-        
-        /*background-image: url('https://farm1.staticflickr.com/15/20623103_a10bc770b1_o.jpg');*/
-        /*remove later*/
-        background-color: black;
-        /*background-image: url('./img/starrybg.jpg');*/
-        background-size: 100%;
+#moonSVG{
+  -webkit-svg-shadow: 0 0 100px #FFFFFF;
+}
 
-        }
+#moonContainer{
+  width: 100%;
+  float:left;
+}
 
-      svg{
-        position: absolute;
-        display:inline-block;
-       /* border-style: solid;
-        border-width: 2px;
-        border-color: gray;*/
-      }
+#moonv2 circle{
+  margin-left:400px;
+}
 
-      #moonSVG{
-        -webkit-svg-shadow: 0 0 100px #FFFFFF;
-      }
+#moonv2{
+  z-index: -1;
+}
 
-      #moonContainer{
-        width: 1200px;
-        float:left;
+#lunaiteinfo{
+  display:inline;
+  width: 350px;
+  height: 300px;
+  margin-right:60px;
+  margin-top:20px;
+  font-size: 18px;
+  line-height: 35px;
+  float: right;
+  text-align: left;
+  color:gray;
+}
 
-       /* border-style: solid;
-        border-width: 2px;
-        border-color: orange;*/
-      }
+h2{
+  color: white;
+}
 
-      #moonv2{
-       /* border-style: solid;
-        border-width: 2px;
-        border-color: white;*/
-      }
+.location{
+  stroke-width: 10.0;
+  stroke: rgba(255, 255, 255, 0.66);
+  fill: rgba(255, 255, 255, 0.66);
+}
 
-      #lunaiteinfo{
-        display:inline;
-        padding-top: 12px;
-        width: 350px;
-        height: 300px;
-        font-size: 18px;
-        line-height: 35px;
-        float: right;
-        text-align: left;
-        color:gray;
+.feature {
+  fill: #468A37;
+  stroke: #1A6D06;
+  stroke-width: .5px;
+}
 
-       /* border-style: solid;
-        border-width: 2px;
-        border-color: blue;*/
-      }
-      
+.globe {
+  stroke: rgba(255, 255, 255, .5);
+  stroke-width: .25px;
+}
 
-      h2{
-        color: white;
-      }
+.star {
+  fill: #fff;
+  stroke: rgba(255, 255, 255, .5);
+  stroke-width: .25px;
+}
 
-      .location{
-        stroke-width: 10.0;
-        stroke: rgba(255, 255, 255, 0.66);
-        fill: rgba(255, 255, 255, 0.66);
-      }
+.lunaiteTooltip {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  background: #fff;
+  padding: 5px;
+  text-align: left;
+  border: solid #ccc 1px;
+  color: #666;
+  font-size: 14px;
+  font-family: sans-serif;
+}
 
-      .feature {
-      fill: #1A6D06;
-      stroke: #1A6D06;
-      stroke-width: .5px;
-      }
 
-      .globe {
-      stroke: rgba(255, 255, 255, .5);
-      stroke-width: .25px;
-      }
+#tooltip {
+    position: absolute;
+    width: 200px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -mox-box-shadow: 4px 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4) pointer-events: none;
+}
 
-      .star {
-      fill: #fff;
-      stroke: rgba(255, 255, 255, .5);
-      stroke-width: .25px;
-      }
-      </style>
+#tooltip.hidden {
+    opacity: 0;
+}
+
+#tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
